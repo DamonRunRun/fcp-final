@@ -2,26 +2,46 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+
 class Node:
 
-	def __init__(self, value, number, connections=None):
+    def __init__(self, value, number, connections=None):
+        self.index = number
+        self.connections = connections
+        self.value = value
 
-		self.index = number
-		self.connections = connections
-		self.value = value
 
-class Network: 
+class Network:
 
-	def __init__(self, nodes=None):
-
+    def __init__(self, nodes=None):
         if nodes is None:
             self.nodes = []
         else:
-            self.nodes = nodes 
+            self.nodes = nodes
 
-	def get_mean_degree(self):
-		#Your code  for task 3 goes here
+    def _total_connections(self):
+        # Calculate the total number of connections in the network
+        return sum(sum(node.connections) for node in self.nodes)
 
+    def get_mean_degree(self):
+        count = self._total_connections()
+        if len(self.nodes) == 0:
+            return 0
+        # Calculate the average number of connections per node
+        return count / len(self.nodes)
+
+    # Your code  for task 3 goes here
+
+    def get_mean_path_length(self):
+        n = len(self.nodes)
+        if n == 0:
+            return 0
+        connection_metric = self._create_connection_metric()
+        distance_matrix = self._calculate_distance_matrix(connection_metric)
+        # Calculate and return the average path length across all pairs of nodes
+        return self._average_path_length(distance_matrix)
+
+    # Your code  for task 3 goes here
 	def get_mean_clustering(self):
 		#Your code for task 3 goes here
 
