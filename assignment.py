@@ -280,7 +280,33 @@ def plot_defuant(ax1, ax2, frame, population, x_values, y_values, epoch):
     plt.pause(0.1)
 
 def test_defuant():
-	#Your code for task 2 goes here
+    '''
+        This function will test the defuant function in the defuant model
+    '''
+
+    print("Testing defuant calculations")
+    population = [1, -1, -1]
+    calculate_defuant_agreement(population, 0, 2, 1)
+    assert (population[0] == -1), "Test 1"
+    assert (population[2] == 1), "Test 1"
+
+    calculate_defuant_agreement(population, 0, 2, 0)
+    assert (population[0] == -1), "Test 2"
+    assert (population[2] == 1), "Test 2"
+
+    print("Testing defuant step")
+    population = [1, 0, -1]
+    defuant_step(population, beta=1, threshold=0)
+    assert (population[0] == 1), "Test 3"
+    assert (population[1] == 0), "Test 3"
+    assert (population[2] == -1), "Test 3"
+
+    population = [1, -1]
+    defuant_step(population, beta=1, threshold=2.1)
+    assert (population[0] == -1), "Test 4"
+    assert (population[1] == 1), "Test 4"
+    print("Tests passed")
+    # Your code for task 2 goes here
 
 
 '''
