@@ -259,6 +259,26 @@ def defuant_main(population, beta=0.2, threshold=0.2):
         plot_defuant(ax1, ax2, frame, population, x_values, y_values, 100)
 	#Your code for task 2 goes here
 
+def plot_defuant(ax1, ax2, frame, population, x_values, y_values, epoch):
+    # Generate visualization images
+    bin_size = 0.05
+    bins = np.arange(0, 1 + bin_size, bin_size)
+    hist, bin_edges = np.histogram(population, bins=bins)
+    ax1.cla()  # Clear any existing content in the axis
+    ax1.bar(bin_edges[:-1], hist, width=bin_size)
+    ax1.set_xticks(np.arange(0, 1.1, 0.2))
+    ax1.set_xlabel('Opinion')
+
+    ax2.cla()
+    x_values.extend([frame] * len(population))
+    y_values.extend(population)
+    ax2.scatter(x_values, y_values, alpha=0.6, color='red')
+    ax2.set_xlim(0, epoch)
+    ax2.set_ylim(0, 1)
+    ax2.set_ylabel('Opinion')
+
+    plt.pause(0.1)
+
 def test_defuant():
 	#Your code for task 2 goes here
 
