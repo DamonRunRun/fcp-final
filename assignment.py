@@ -134,19 +134,34 @@ This section contains code for the Ising Model - task 1 in the assignment
 '''
 
 def calculate_agreement(population, row, col, external=0.0):
-	'''
-	This function should return the *change* in agreement that would result if the cell at (row, col) was to flip it's value
-	Inputs: population (numpy array)
-			row (int)
-			col (int)
-			external (float)
-	Returns:
-			change_in_agreement (float)
-	'''
+    '''
+    This function should return the *change* in agreement that would result if the cell at (row, col) was to flip it's value
+    Inputs: population (numpy array)
+            row (int)
+            col (int)
+            external (float)
+    Returns:
+            change_in_agreement (float)
+    '''
 
-	#Your code for task 1 goes here
+    # Your code for task 1 goes here
+    # Determine the number of rows and columns in the population array
+    n_rows, n_cols = population.shape
+    # Initialize a counter to accumulate the agreement value
+    count = 0
+    # Check the cell above, below, left and right, if it exists, and calculate the product with the current cell
+    if row >= 1:
+        count += population[row, col] * population[row - 1, col]
+    if col >= 1:
+        count += population[row, col] * population[row, col - 1]
+    if row < n_rows - 1:
+        count += population[row, col] * population[row + 1, col]
+    if col < n_cols - 1:
+        count += population[row, col] * population[row, col + 1]
+    count += population[row, col] * external
+    return count
 
-	return np.random * population
+
 
 def ising_step(population, external=0.0):
 	'''
