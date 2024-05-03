@@ -211,51 +211,51 @@ class Network:
 
 def test_networks():
 
-	#Ring network
-	nodes = []
-	num_nodes = 10
-	for node_number in range(num_nodes):
-		connections = [0 for val in range(num_nodes)]
-		connections[(node_number-1)%num_nodes] = 1
-		connections[(node_number+1)%num_nodes] = 1
-		new_node = Node(0, node_number, connections=connections)
-		nodes.append(new_node)
-	network = Network(nodes)
+    #Ring network
+    nodes = []
+    num_nodes = 10
+    for node_number in range(num_nodes):
+        connections = [0 for val in range(num_nodes)]
+        connections[(node_number-1)%num_nodes] = 1
+        connections[(node_number+1)%num_nodes] = 1
+        new_node = Node(0, node_number, connections=connections)
+        nodes.append(new_node)
+    network = Network(nodes)
 
-	print("Testing ring network")
-	assert(network.get_mean_degree()==2), network.get_mean_degree()
-	assert(network.get_clustering()==0), network.get_clustering()
-	assert(network.get_path_length()==2.777777777777778), network.get_path_length()
+    print("Testing ring network")
+    assert(network.get_mean_degree()==2), network.get_mean_degree()
+    assert(network.get_clustering()==0), network.get_clustering()
+    assert(network.get_path_length()==2.777777777777778), network.get_path_length()
 
-	nodes = []
-	num_nodes = 10
-	for node_number in range(num_nodes):
-		connections = [0 for val in range(num_nodes)]
-		connections[(node_number+1)%num_nodes] = 1
-		new_node = Node(0, node_number, connections=connections)
-		nodes.append(new_node)
-	network = Network(nodes)
+    nodes = []
+    num_nodes = 10
+    for node_number in range(num_nodes):
+        connections = [0 for val in range(num_nodes)]
+        connections[(node_number+1)%num_nodes] = 1
+        new_node = Node(0, node_number, connections=connections)
+        nodes.append(new_node)
+    network = Network(nodes)
 
-	print("Testing one-sided network")
-	assert(network.get_mean_degree()==1), network.get_mean_degree()
-	assert(network.get_clustering()==0),  network.get_clustering()
-	assert(network.get_path_length()==5), network.get_path_length()
+    print("Testing one-sided network")
+    assert(network.get_mean_degree()==1), network.get_mean_degree()
+    assert(network.get_clustering()==0),  network.get_clustering()
+    assert(network.get_path_length()==5), network.get_path_length()
 
-	nodes = []
-	num_nodes = 10
-	for node_number in range(num_nodes):
-		connections = [1 for val in range(num_nodes)]
-		connections[node_number] = 0
-		new_node = Node(0, node_number, connections=connections)
-		nodes.append(new_node)
-	network = Network(nodes)
+    nodes = []
+    num_nodes = 10
+    for node_number in range(num_nodes):
+        connections = [1 for val in range(num_nodes)]
+        connections[node_number] = 0
+        new_node = Node(0, node_number, connections=connections)
+        nodes.append(new_node)
+    network = Network(nodes)
 
-	print("Testing fully connected network")
-	assert(network.get_mean_degree()==num_nodes-1), network.get_mean_degree()
-	assert(network.get_clustering()==1),  network.get_clustering()
-	assert(network.get_path_length()==1), network.get_path_length()
+    print("Testing fully connected network")
+    assert(network.get_mean_degree()==num_nodes-1), network.get_mean_degree()
+    assert(network.get_clustering()==1),  network.get_clustering()
+    assert(network.get_path_length()==1), network.get_path_length()
 
-	print("All tests passed")
+    print("All tests passed")
 
 '''
 ==============================================================================================================
@@ -314,18 +314,18 @@ def ising_step(population, external=0.0, alpha=1):
 
 
 def plot_ising(im, population):
-	'''
-	This function will display a plot of the Ising model
-	'''
+    '''
+    This function will display a plot of the Ising model
+    '''
 
     new_im = np.array([[255 if val == -1 else 1 for val in rows] for rows in population], dtype=np.int8)
     im.set_data(new_im)
     plt.pause(0.1)
 
 def test_ising():
-	'''
-	This function will test the calculate_agreement function in the Ising model
-	'''
+    '''
+    This function will test the calculate_agreement function in the Ising model
+    '''
 
     print("Testing ising model calculations")
     population = -np.ones((3, 3))
@@ -432,7 +432,7 @@ def defuant_main(population, beta=0.2, threshold=0.2):
         print('Step:', frame, end='\r')
         # Plot the current state of the population using the plot_defuant function
         plot_defuant(ax1, ax2, frame, population, x_values, y_values, 100)
-	#Your code for task 2 goes here
+    #Your code for task 2 goes here
 
 def plot_defuant(ax1, ax2, frame, population, x_values, y_values, epoch):
     # Generate visualization images
@@ -491,7 +491,7 @@ This section contains code for the main function- you should write some code for
 '''
 
 def main():
-	#You should write some code for handling flags here
+    #You should write some code for handling flags here
 
 if __name__=="__main__":
-	main()
+    main()
