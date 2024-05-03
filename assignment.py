@@ -163,23 +163,25 @@ def calculate_agreement(population, row, col, external=0.0):
 
 
 
-def ising_step(population, external=0.0):
-	'''
-	This function will perform a single update of the Ising model
-	Inputs: population (numpy array)
-			external (float) - optional - the magnitude of any external "pull" on opinion
-	'''
-	
-	n_rows, n_cols = population.shape
-	row = np.random.randint(0, n_rows)
-	col  = np.random.randint(0, n_cols)
+def ising_step(population, external=0.0, alpha=1):
+    '''
+    This function will perform a single update of the Ising model
+    Inputs: population (numpy array)
+            external (float) - optional - the magnitude of any external "pull" on opinion
+    '''
 
-	agreement = calculate_agreement(population, row, col, external=0.0)
+    n_rows, n_cols = population.shape
+    row = np.random.randint(0, n_rows)
+    col = np.random.randint(0, n_cols)
 
-	if agreement < 0:
-		population[row, col] *= -1
+    agreement = calculate_agreement(population, row, col, external)
+    probability = math.exp(-agreement / alpha)
+    # Determine if the cell should flip its state
+    if (agreement < 0) or (np.random.rand() < probability):
+        population[row, col] *= -1
+    return population
+    # Your code for task 1 goes here
 
-	#Your code for task 1 goes here
 
 def plot_ising(im, population):
 	'''
