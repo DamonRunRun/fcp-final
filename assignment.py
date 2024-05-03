@@ -220,8 +220,8 @@ def test_ising():
     population = -np.ones((3, 3))
     assert(calculate_agreement(population,1,1,1)==3), "Test 7"
     assert(calculate_agreement(population,1,1,-1)==5), "Test 8"
-    assert(calculate_agreement(population,1,1,10)==14), "Test 9"
-    assert(calculate_agreement(population,1,1,-10)==-6), "Test 10"
+    assert(calculate_agreement(population,1,1,-10)==14), "Test 9"
+    assert(calculate_agreement(population,1,1,10)==-6), "Test 10"
 
     print("Tests passed")
 
