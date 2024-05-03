@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import math
+import argparse
+import copy
+from collections import deque
+import random
 
 
 class Node:
@@ -122,38 +127,87 @@ class Network:
 
     # Your code for task 3 goes here
 
-	def make_ring_network(self, N, neighbour_range=1):
-		#Your code  for task 4 goes here
+    def make_random_network(self, N, connection_probability):
+        '''
+        This function makes a *random* network of size N.
+        Each node is connected to each other node with probability p
+        '''
 
-	def make_small_world_network(self, N, re_wire_prob=0.2):
-		#Your code for task 4 goes here
+        self.nodes = []
+        for node_number in range(N):
+            value = np.random.random()
+            connections = [0 for _ in range(N)]
+            self.nodes.append(Node(value, node_number, connections))
 
-	def plot(self):
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index + 1, N):
+                if np.random.random() < connection_probability:
+                    node.connections[neighbour_index] = 1
+                    self.nodes[neighbour_index].connections[index] = 1
 
-		fig = plt.figure()
-		ax = fig.add_subplot(111)
-		ax.set_axis_off()
+    def make_ring_network(self, N, neighbour_range=1):
+        self.nodes = []
+        num_nodes = N
+        # Loop to create each node in the network
+        for node_number in range(num_nodes):
+            connections = [0 for val in range(num_nodes)]
+            # Set connections for each node within the specified neighbour range
+            for n in range(1, neighbour_range + 1):
+                connections[(node_number - n) % num_nodes] = 1
+                connections[(node_number + n) % num_nodes] = 1
+            new_node = Node(np.random.random(), node_number, connections=connections)
+            self.nodes.append(new_node)
 
-		num_nodes = len(self.nodes)
-		network_radius = num_nodes * 10
-		ax.set_xlim([-1.1*network_radius, 1.1*network_radius])
-		ax.set_ylim([-1.1*network_radius, 1.1*network_radius])
+    # Your code  for task 4 goes here
 
-		for (i, node) in enumerate(self.nodes):
-			node_angle = i * 2 * np.pi / num_nodes
-			node_x = network_radius * np.cos(node_angle)
-			node_y = network_radius * np.sin(node_angle)
+    def make_small_world_network(self, N, re_wire_prob=0.2):
+        self.nodes = []
+        num_nodes = N
+        # Loop to create each node in the network
+        for node_number in range(num_nodes):
+            connections = [0 for val in range(num_nodes)]
+            # Generate random probabilities and destination indices for potential re-wiring
+            prob = np.random.random(4)
+            des = np.random.randint(0, N, (4))
+            bias = [-1, -2, 1, 2]
+            # Loop to establish connections based on re-wiring probability
+            for i in range(4):
+                if prob[i] >= re_wire_prob:
+                    connections[(node_number + bias[i]) % num_nodes] = 1
+                elif des[i] != i:
+                    connections[des[i]] = 1
+            # Create a new node instance with a random opinion value, its index, and its connections
+            new_node = Node(np.random.random(), node_number, connections=connections)
+            self.nodes.append(new_node)
 
-			circle = plt.Circle((node_x, node_y), 0.3*num_nodes, color=cm.hot(node.value))
-			ax.add_patch(circle)
+    # Your code for task 4 goes here
 
-			for neighbour_index in range(i+1, num_nodes):
-				if node.connections[neighbour_index]:
-					neighbour_angle = neighbour_index * 2 * np.pi / num_nodes
-					neighbour_x = network_radius * np.cos(neighbour_angle)
-					neighbour_y = network_radius * np.sin(neighbour_angle)
+    def plot(self):
 
-					ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_axis_off()
+
+        num_nodes = len(self.nodes)
+        network_radius = num_nodes * 10
+        ax.set_xlim([-1.1*network_radius, 1.1*network_radius])
+        ax.set_ylim([-1.1*network_radius, 1.1*network_radius])
+
+        for (i, node) in enumerate(self.nodes):
+            node_angle = i * 2 * np.pi / num_nodes
+            node_x = network_radius * np.cos(node_angle)
+            node_y = network_radius * np.sin(node_angle)
+
+            circle = plt.Circle((node_x, node_y), 0.3*num_nodes, color=cm.hot(node.value))
+            ax.add_patch(circle)
+
+            for neighbour_index in range(i+1, num_nodes):
+                if node.connections[neighbour_index]:
+                    neighbour_angle = neighbour_index * 2 * np.pi / num_nodes
+                    neighbour_x = network_radius * np.cos(neighbour_angle)
+                    neighbour_y = network_radius * np.sin(neighbour_angle)
+
+                    ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
 
 def test_networks():
 
