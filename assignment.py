@@ -190,18 +190,18 @@ class Network:
 
         num_nodes = len(self.nodes)
         network_radius = num_nodes * 10
-        ax.set_xlim([-1.1*network_radius, 1.1*network_radius])
-        ax.set_ylim([-1.1*network_radius, 1.1*network_radius])
+        ax.set_xlim([-1.1 * network_radius, 1.1 * network_radius])
+        ax.set_ylim([-1.1 * network_radius, 1.1 * network_radius])
 
         for (i, node) in enumerate(self.nodes):
             node_angle = i * 2 * np.pi / num_nodes
             node_x = network_radius * np.cos(node_angle)
             node_y = network_radius * np.sin(node_angle)
 
-            circle = plt.Circle((node_x, node_y), 0.3*num_nodes, color=cm.hot(node.value))
+            circle = plt.Circle((node_x, node_y), 0.3 * num_nodes, color=cm.hot(node.value))
             ax.add_patch(circle)
 
-            for neighbour_index in range(i+1, num_nodes):
+            for neighbour_index in range(i + 1, num_nodes):
                 if node.connections[neighbour_index]:
                     neighbour_angle = neighbour_index * 2 * np.pi / num_nodes
                     neighbour_x = network_radius * np.cos(neighbour_angle)
@@ -209,37 +209,59 @@ class Network:
 
                     ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
 
-def test_networks():
+    def plot_net(self, ax):
+        # Rewrite visualization functions
+        num_nodes = len(self.nodes)
+        network_radius = num_nodes * 10
+        ax.set_xlim([-1.1 * network_radius, 1.1 * network_radius])
+        ax.set_ylim([-1.1 * network_radius, 1.1 * network_radius])
 
-    #Ring network
+        for (i, node) in enumerate(self.nodes):
+            node_angle = i * 2 * np.pi / num_nodes
+            node_x = network_radius * np.cos(node_angle)
+            node_y = network_radius * np.sin(node_angle)
+            circle = plt.Circle((node_x, node_y), 0.3 * num_nodes, color=cm.hot(node.value))
+            ax.add_patch(circle)
+
+            for neighbour_index in range(i + 1, num_nodes):
+                if node.connections[neighbour_index]:
+                    neighbour_angle = neighbour_index * 2 * np.pi / num_nodes
+                    neighbour_x = network_radius * np.cos(neighbour_angle)
+                    neighbour_y = network_radius * np.sin(neighbour_angle)
+
+                    ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
+
+
+def test_networks():
+    # Ring network
     nodes = []
     num_nodes = 10
     for node_number in range(num_nodes):
         connections = [0 for val in range(num_nodes)]
-        connections[(node_number-1)%num_nodes] = 1
-        connections[(node_number+1)%num_nodes] = 1
+        connections[(node_number - 1) % num_nodes] = 1
+        connections[(node_number + 1) % num_nodes] = 1
         new_node = Node(0, node_number, connections=connections)
         nodes.append(new_node)
     network = Network(nodes)
 
     print("Testing ring network")
-    assert(network.get_mean_degree()==2), network.get_mean_degree()
-    assert(network.get_clustering()==0), network.get_clustering()
-    assert(network.get_path_length()==2.777777777777778), network.get_path_length()
+    assert (network.get_mean_degree() == 2), network.get_mean_degree()
+    assert (network.get_mean_clustering() == 0), network.get_mean_clustering()
+    assert (network.get_mean_path_length() == 2.777777777777778), network.get_mean_path_length()
 
     nodes = []
     num_nodes = 10
     for node_number in range(num_nodes):
         connections = [0 for val in range(num_nodes)]
-        connections[(node_number+1)%num_nodes] = 1
+        connections[(node_number + 1) % num_nodes] = 1
         new_node = Node(0, node_number, connections=connections)
         nodes.append(new_node)
     network = Network(nodes)
 
     print("Testing one-sided network")
-    assert(network.get_mean_degree()==1), network.get_mean_degree()
-    assert(network.get_clustering()==0),  network.get_clustering()
-    assert(network.get_path_length()==5), network.get_path_length()
+    assert (network.get_mean_degree() == 1), network.get_mean_degree()
+    assert (network.get_mean_clustering() == 0), network.get_mean_clustering()
+    assert (network.get_mean_path_length() == 5), network.get_mean_path_length()
 
     nodes = []
     num_nodes = 10
@@ -251,17 +273,19 @@ def test_networks():
     network = Network(nodes)
 
     print("Testing fully connected network")
-    assert(network.get_mean_degree()==num_nodes-1), network.get_mean_degree()
-    assert(network.get_clustering()==1),  network.get_clustering()
-    assert(network.get_path_length()==1), network.get_path_length()
+    assert (network.get_mean_degree() == num_nodes - 1), network.get_mean_degree()
+    assert (network.get_mean_clustering() == 1), network.get_mean_clustering()
+    assert (network.get_mean_path_length() == 1), network.get_mean_path_length()
 
     print("All tests passed")
+
 
 '''
 ==============================================================================================================
 This section contains code for the Ising Model - task 1 in the assignment
 ==============================================================================================================
 '''
+
 
 def calculate_agreement(population, row, col, external=0.0):
     '''
@@ -290,7 +314,6 @@ def calculate_agreement(population, row, col, external=0.0):
         count += population[row, col] * population[row, col + 1]
     count += population[row, col] * external
     return count
-
 
 
 def ising_step(population, external=0.0, alpha=1):
@@ -322,6 +345,7 @@ def plot_ising(im, population):
     im.set_data(new_im)
     plt.pause(0.1)
 
+
 def test_ising():
     '''
     This function will test the calculate_agreement function in the Ising model
@@ -329,35 +353,34 @@ def test_ising():
 
     print("Testing ising model calculations")
     population = -np.ones((3, 3))
-    assert(calculate_agreement(population,1,1)==4), "Test 1"
+    assert (calculate_agreement(population, 1, 1) == 4), "Test 1"
 
     population[1, 1] = 1.
-    assert(calculate_agreement(population,1,1)==-4), "Test 2"
+    assert (calculate_agreement(population, 1, 1) == -4), "Test 2"
 
     population[0, 1] = 1.
-    assert(calculate_agreement(population,1,1)==-2), "Test 3"
+    assert (calculate_agreement(population, 1, 1) == -2), "Test 3"
 
     population[1, 0] = 1.
-    assert(calculate_agreement(population,1,1)==0), "Test 4"
+    assert (calculate_agreement(population, 1, 1) == 0), "Test 4"
 
     population[2, 1] = 1.
-    assert(calculate_agreement(population,1,1)==2), "Test 5"
+    assert (calculate_agreement(population, 1, 1) == 2), "Test 5"
 
     population[1, 2] = 1.
-    assert(calculate_agreement(population,1,1)==4), "Test 6"
+    assert (calculate_agreement(population, 1, 1) == 4), "Test 6"
 
     "Testing external pull"
     population = -np.ones((3, 3))
-    assert(calculate_agreement(population,1,1,1)==3), "Test 7"
-    assert(calculate_agreement(population,1,1,-1)==5), "Test 8"
-    assert(calculate_agreement(population,1,1,-10)==14), "Test 9"
-    assert(calculate_agreement(population,1,1,10)==-6), "Test 10"
+    assert (calculate_agreement(population, 1, 1, 1) == 3), "Test 7"
+    assert (calculate_agreement(population, 1, 1, -1) == 5), "Test 8"
+    assert (calculate_agreement(population, 1, 1, -10) == 14), "Test 9"
+    assert (calculate_agreement(population, 1, 1, 10) == -6), "Test 10"
 
     print("Tests passed")
 
 
 def ising_main(population, alpha=None, external=0.0):
-    
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_axis_off()
@@ -370,6 +393,7 @@ def ising_main(population, alpha=None, external=0.0):
             ising_step(population, external)
         print('Step:', frame, end='\r')
         plot_ising(im, population)
+
 
 def calculate_agreement_net(node, nodes, external):
     count = 0
@@ -400,17 +424,22 @@ def ising_main_net(network, alpha, external):
         network.plot_net(ax)
         plt.pause(0.1)
     plt.show()
+
+
 '''
 ==============================================================================================================
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
+
+
 def calculate_defuant_agreement(population, i, j, beta=0.2):
-    temp = population[i] # Store the current value of the ith individual
+    temp = population[i]  # Store the current value of the ith individual
     # Update the value of the ith and jth individual
     population[i] += beta * (population[j] - population[i])
     population[j] += beta * (temp - population[j])
     return population
+
 
 def defuant_step(population, beta=0.2, threshold=0.2):
     # Randomly select two different indices from the population array
@@ -419,6 +448,7 @@ def defuant_step(population, beta=0.2, threshold=0.2):
     if abs(population[i] - population[j]) < threshold:
         population = calculate_defuant_agreement(population, i, j, beta)
     return population
+
 
 def defuant_main(population, beta=0.2, threshold=0.2):
     # Create a figure with two subplots for displaying the histogram and scatter plot
@@ -432,7 +462,59 @@ def defuant_main(population, beta=0.2, threshold=0.2):
         print('Step:', frame, end='\r')
         # Plot the current state of the population using the plot_defuant function
         plot_defuant(ax1, ax2, frame, population, x_values, y_values, 100)
-    #Your code for task 2 goes here
+    # Your code for task 2 goes here
+
+
+def calculate_defuant_agreement_net(network, i, j, beta=0.2):
+    nodes = network.nodes
+    # Store the current value of node i
+    temp = nodes[i].value
+    # Update the value of node i and j
+    nodes[i].value += beta * (nodes[j].value - nodes[i].value)
+    nodes[j].value += beta * (temp - nodes[j].value)
+    return network
+
+
+def defuant_main_net(network, beta=0.2, threshold=0.5):
+    # Create a new plot
+    ax = plt.figure().add_subplot()
+    # Run the simulation for 100 frames
+    for frame in range(100):
+        for step in range(8):
+            network = defuant_step_net(network, beta, threshold)
+        # Clear the plot for the next frame
+        ax.clear()
+        ax.set_axis_off()
+        network.plot_net(ax)
+        plt.pause(0.1)
+
+
+def _get_connected_indices(node):
+    # Initialize an empty list to store indices of connected nodes
+    connected_indices = []
+    for i in range(len(node.connections)):
+        # If there is a connection to node i, add it to the list
+        if node.connections[i] == 1:
+            connected_indices.append(i)
+    return connected_indices
+
+
+def defuant_step_net(network, beta=0.2, threshold=0.2):
+    # Select a random node from the network
+    node = network.nodes[np.random.randint(len(network.nodes))]
+    # Get indices of nodes connected to the selected node
+    connected_indices = _get_connected_indices(node)
+    # If no connections, return the network as is
+    if connected_indices == []:
+        return network
+    i = node.index
+    j = random.choice(connected_indices)
+    nodes = network.nodes
+    # Check if the value difference between node i and node j is less than the threshold
+    if i != j and (abs(nodes[i].value - nodes[j].value) < threshold):
+        calculate_defuant_agreement_net(network, i, j, beta)
+    return network
+
 
 def plot_defuant(ax1, ax2, frame, population, x_values, y_values, epoch):
     # Generate visualization images
@@ -453,6 +535,7 @@ def plot_defuant(ax1, ax2, frame, population, x_values, y_values, epoch):
     ax2.set_ylabel('Opinion')
 
     plt.pause(0.1)
+
 
 def test_defuant():
     '''
@@ -489,6 +572,7 @@ def test_defuant():
 This section contains code for the main function- you should write some code for handling flags here
 ==============================================================================================================
 '''
+
 
 def main():
     parser = argparse.ArgumentParser(description='The Test')
@@ -564,5 +648,6 @@ def main():
         plt.show()
     #You should write some code for handling flags here
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
