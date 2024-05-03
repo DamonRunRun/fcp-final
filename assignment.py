@@ -42,29 +42,85 @@ class Network:
         return self._average_path_length(distance_matrix)
 
     # Your code  for task 3 goes here
-	def get_mean_clustering(self):
-		#Your code for task 3 goes here
 
-	def get_mean_path_length(self):
-		#Your code for task 3 goes here
+    def _create_connection_metric(self):
+        # Create a matrix that represents node connections
+        n = len(self.nodes)
+        connection_metric = [[] for _ in range(n)]
+        for node in self.nodes:
+            connection_metric[node.index] = copy.copy(node.connections)
+        return np.array(connection_metric)
 
-	def make_random_network(self, N, connection_probability):
-		'''
-		This function makes a *random* network of size N.
-		Each node is connected to each other node with probability p
-		'''
+    def _calculate_distance_matrix(self, connection_metric):
+        # Calculate the distance matrix using the connection matrix
+        n = len(connection_metric)
+        distance_matrix = np.zeros((n, n), dtype=int)
+        # Calculate distances using Breadth-First Search (BFS) for each node
+        for i in range(n):
+            distance_matrix[i] = self._bfs_distance(connection_metric, i)
+        return distance_matrix
 
-		self.nodes = []
-		for node_number in range(N):
-			value = np.random.random()
-			connections = [0 for _ in range(N)]
-			self.nodes.append(Node(value, node_number, connections))
+    def _bfs_distance(self, graph, start_node):
+        N = len(graph)
+        # Initialize distances array with -1 (indicating unvisited nodes)
+        distances = [-1] * N
+        distances[start_node] = 0
+        # Use a queue to manage the BFS process
+        queue = deque([start_node])
+        # Process the queue until empty
+        while queue:
+            current = queue.popleft()
+            current_distance = distances[current]
+            # Check all possible neighbors
+            for neighbor in range(N):
+                # If there is a connection and neighbor hasn't been visited
+                if graph[current][neighbor] == 1 and distances[neighbor] == -1:
+                    distances[neighbor] = current_distance + 1
+                    queue.append(neighbor)
+        return distances
 
-		for (index, node) in enumerate(self.nodes):
-			for neighbour_index in range(index+1, N):
-				if np.random.random() < connection_probability:
-					node.connections[neighbour_index] = 1
-					self.nodes[neighbour_index].connections[index] = 1
+    def _average_path_length(self, distance_matrix):
+        n = len(distance_matrix)
+        count_metric = []
+        # Calculate the average path length for each node
+        for i in range(n):
+            positive_numbers = [num for num in distance_matrix[i] if num > 0]
+            count = len(positive_numbers)
+            total_sum = sum(positive_numbers)
+            if count == 0:
+                count_metric.append(0)
+            else:
+                count_metric.append(total_sum / count)
+        # Calculate the overall average path length
+        return sum(count_metric) / n if count_metric else 0
+
+    def get_mean_clustering(self):
+        n = len(self.nodes)
+        if n == 0:
+            return 0
+        connection_metric = self._create_connection_metric()
+        # Calculate and return the average clustering coefficient
+        return self._calculate_clustering_coefficient(connection_metric)
+
+    def _calculate_clustering_coefficient(self, connection_metric):
+        n = len(connection_metric)
+        count_metric = []
+        # Calculate the clustering coefficient for each node
+        for i in range(n):
+            if sum(connection_metric[i]) == 0:
+                count_metric.append(0)
+            else:
+                lines = sum(connection_metric[i]) * (sum(connection_metric[i]) - 1) / 2
+                positive_indices = np.where(connection_metric[i, :] > 0)[0]
+                new_matrix = connection_metric[np.ix_(positive_indices, positive_indices)]
+                if lines == 0:
+                    count_metric.append(0)
+                else:
+                    count_metric.append(np.sum(new_matrix) / 2 / lines)
+
+        return sum(count_metric) / n if count_metric else 0
+
+    # Your code for task 3 goes here
 
 	def make_ring_network(self, N, neighbour_range=1):
 		#Your code  for task 4 goes here
