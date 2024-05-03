@@ -491,6 +491,77 @@ This section contains code for the main function- you should write some code for
 '''
 
 def main():
+    parser = argparse.ArgumentParser(description='The Test')
+    parser.add_argument('-ising_model', action='store_true')
+    parser.add_argument('-external', type=float, default=0)
+    parser.add_argument('-alpha', type=float, default=1.0)
+    parser.add_argument('-test_ising', action='store_true')
+
+    parser.add_argument('-defuant', action='store_true')
+    parser.add_argument('-beta', type=float, default=0.2)
+    parser.add_argument('-threshold', type=float, default=0.2)
+    parser.add_argument('-test_defuant', action='store_true')
+
+    parser.add_argument('-network', type=int, default=0)
+    parser.add_argument('-test_network', action='store_true')
+
+    parser.add_argument('-ring_network', type=int, default=0)
+    parser.add_argument('-small_world', type=int, default=0)
+    parser.add_argument('-re_wire', type=float, default=0.2)
+
+    parser.add_argument('-use_network', type=int, default=0)
+    args = parser.parse_args()
+
+    if args.ising_model:
+        if args.use_network:
+            network = Network()
+            network.make_small_world_network(args.use_network, 0.2)
+            ising_main_net(network, args.alpha, args.external)
+        else:
+            population = np.random.choice([-1, 1], size=(100, 100))
+            ising_main(population, args.alpha, args.external)
+            # plt.show()
+
+    if args.test_ising:
+        test_ising()
+
+    if args.defuant:
+        if args.use_network:
+            network = Network()
+            network.make_small_world_network(args.use_network, 0.2)
+            defuant_main_net(network, args.alpha, args.threshold)
+        else:
+            population = np.random.rand(100)
+            defuant_main(population, args.beta, args.threshold)
+            plt.show()
+
+    if args.test_defuant:
+        population = np.random.rand(100)
+        test_defuant(population, args.beta, args.threshold)
+
+    if args.network:
+        network = Network()
+        network.make_random_network(args.network, 0.2)
+        network.plot()
+        plt.show()
+        print(f"Mean degree: {network.get_mean_degree()}")
+        print(f"Average path length: {network.get_mean_path_length()}")
+        print(f"Clustering co-efficient: {network.get_mean_clustering()}")
+
+    if args.test_network:
+        test_networks()
+
+    if args.ring_network:
+        network = Network()
+        network.make_ring_network(args.ring_network)
+        network.plot()
+        plt.show()
+
+    if args.small_world:
+        network = Network()
+        network.make_small_world_network(args.small_world, args.re_wire)
+        network.plot()
+        plt.show()
     #You should write some code for handling flags here
 
 if __name__=="__main__":
