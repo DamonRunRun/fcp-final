@@ -236,8 +236,27 @@ def calculate_defuant_agreement(population, i, j, beta=0.2):
     population[i] += beta * (population[j] - population[i])
     population[j] += beta * (temp - population[j])
     return population
-	
-def defuant_main():
+
+def defuant_step(population, beta=0.2, threshold=0.2):
+    # Randomly select two different indices from the population array
+    i, j = np.random.choice(len(population), 2, replace=False)
+    # Check if the difference between the opinions of the two individuals is less than the threshold
+    if abs(population[i] - population[j]) < threshold:
+        population = calculate_defuant_agreement(population, i, j, beta)
+    return population
+
+def defuant_main(population, beta=0.2, threshold=0.2):
+    # Create a figure with two subplots for displaying the histogram and scatter plot
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    plt.suptitle(f"Coupling: {beta}, Threshold: {threshold}", fontsize=16)
+    x_values = []
+    y_values = []
+    for frame in range(100):
+        for step in range(8):
+            population = defuant_step(population, beta, threshold)
+        print('Step:', frame, end='\r')
+        # Plot the current state of the population using the plot_defuant function
+        plot_defuant(ax1, ax2, frame, population, x_values, y_values, 100)
 	#Your code for task 2 goes here
 
 def test_defuant():
