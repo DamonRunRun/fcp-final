@@ -230,7 +230,13 @@ def ising_main(population, alpha=None, external=0.0):
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
-
+def calculate_defuant_agreement(population, i, j, beta=0.2):
+    temp = population[i] # Store the current value of the ith individual
+    # Update the value of the ith and jth individual
+    population[i] += beta * (population[j] - population[i])
+    population[j] += beta * (temp - population[j])
+    return population
+	
 def defuant_main():
 	#Your code for task 2 goes here
 
