@@ -390,7 +390,7 @@ def ising_main(population, alpha=None, external=0.0):
     for frame in range(100):
         # Iterating single steps 1000 times to form an update
         for step in range(1000):
-            ising_step(population, external)
+            ising_step(population, external, alpha)
         print('Step:', frame, end='\r')
         plot_ising(im, population)
 
