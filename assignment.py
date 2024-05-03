@@ -371,7 +371,35 @@ def ising_main(population, alpha=None, external=0.0):
         print('Step:', frame, end='\r')
         plot_ising(im, population)
 
+def calculate_agreement_net(node, nodes, external):
+    count = 0
+    for i, connected in enumerate(node.connections):
+        if connected:
+            count += node.value * nodes[i].value
+    count = node.value * external
+    return count
 
+
+def ising_step_net(network, alpha=1, external=0.0):
+    node = network.nodes[np.random.randint(len(network.nodes))]
+    agreement = calculate_agreement_net(node, network.nodes, external)
+    probability = math.exp(-agreement / alpha)
+    if (agreement < 0) or (np.random.rand() < probability):
+        node.value *= -1
+
+
+def ising_main_net(network, alpha, external):
+    ax = plt.figure().add_subplot()
+    epoch = 100
+    each_epoch_iters = 1000
+    for frame in range(epoch):
+        for step in range(each_epoch_iters):
+            ising_step_net(network, alpha, external)
+        ax.clear()
+        ax.set_axis_off()
+        network.plot_net(ax)
+        plt.pause(0.1)
+    plt.show()
 '''
 ==============================================================================================================
 This section contains code for the Defuant Model - task 2 in the assignment
